@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{53B9D8AD-DFF8-43C3-E037-E69618227F16}</ProjectGuid>
+    <ProjectGuid>{9A5E058E-7908-CB89-3CC2-F32D9EEA144B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -273,9 +273,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="VF_DynamicReco.csproj">
-      <Project>{B0A41176-08DB-A493-BC20-CC511AF47762}</Project>
-      <Name>VF_DynamicReco</Name>
+    <ProjectReference Include="VF_DynamicCreation.csproj">
+      <Project>{1AC76133-CCC6-F46A-6D99-1D9DC31A3AF5}</Project>
+      <Name>VF_DynamicCreation</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

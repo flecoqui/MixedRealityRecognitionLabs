@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B0A41176-08DB-A493-BC20-CC511AF47762}</ProjectGuid>
+    <ProjectGuid>{1AC76133-CCC6-F46A-6D99-1D9DC31A3AF5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>Assembly-CSharp</AssemblyName>
     <FileAlignment>512</FileAlignment>
@@ -219,7 +219,6 @@
     <Compile Include="Assets\Scripts\AssetBundleLoadOperation.cs" />
     <Compile Include="Assets\Scripts\AssetBundleManager.cs" />
     <Compile Include="Assets\Scripts\GestureManager.cs" />
-    <Compile Include="Assets\Scripts\LoadAssets.cs" />
     <Compile Include="Assets\Scripts\localDB.cs.cs" />
     <Compile Include="Assets\Scripts\UIItems.cs" />
     <Compile Include="Assets\Scripts\Utility.cs" />
