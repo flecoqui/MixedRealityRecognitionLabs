@@ -58,7 +58,7 @@ public class MainSceneUI : MonoBehaviour {
             current3DObject = obj;
         }
     }
-    bool GetPrimitiveType(string name, out PrimitiveType type)
+    private static bool GetPrimitiveType(string name, out PrimitiveType type)
     {
         bool result = true;
         type = PrimitiveType.Capsule;
@@ -126,13 +126,13 @@ public class MainSceneUI : MonoBehaviour {
         }
 
     }
-    private void LoadLocalAssetBundle(localDB.ObjectModel Item)
+    private static GameObject GetLocalAssetBundle(localDB.ObjectModel Item)
     {
         var myLoadedAssetBundle = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, Item.AssetBundleName));
         if (myLoadedAssetBundle == null)
         {
             Debug.Log("Failed to load AssetBundle from " + Application.streamingAssetsPath + "!");
-            return;
+            return null;
         }
 
         var prefab = myLoadedAssetBundle.LoadAsset<GameObject>(Item.Name);
@@ -143,12 +143,42 @@ public class MainSceneUI : MonoBehaviour {
             obj.transform.localPosition = new Vector3(Item.positionX, Item.positionY, Item.positionZ);
             obj.transform.eulerAngles = new Vector3(Item.rotationX, Item.rotationY, Item.rotationZ);
             obj.transform.localScale = new Vector3(Item.scaleX, Item.scaleY, Item.scaleZ);
+            return obj;
+        }
+        return null;
+    }
+    private void LoadLocalAssetBundle(localDB.ObjectModel Item)
+    {
+        GameObject obj = GetLocalAssetBundle(Item);
+        if (obj != null)
+        {
             obj.transform.parent = gameObject.transform;
             SetCurrent3DObject(obj);
 
         }
     }
-    private void LoadLocalPrefab(localDB.ObjectModel Item)
+    public static void WaitCoroutine(IEnumerator func)
+    {
+        while (func.MoveNext())
+        {
+            if (func.Current != null)
+            {
+                IEnumerator num;
+                try
+                {
+                    num = (IEnumerator)func.Current;
+                }
+                catch (System.InvalidCastException)
+                {
+                    if (func.Current.GetType() == typeof(WaitForSeconds))
+                        Debug.LogWarning("Skipped call to WaitForSeconds. Use WaitForSecondsRealtime instead.");
+                    return;  // Skip WaitForSeconds, WaitForEndOfFrame and WaitForFixedUpdate
+                }
+                WaitCoroutine(num);
+            }
+        }
+    }
+    private static GameObject  GetLocalPrefab(localDB.ObjectModel Item)
     {
         Object res = Resources.Load(Item.Name, typeof(GameObject));
         if (res != null)
@@ -157,12 +187,20 @@ public class MainSceneUI : MonoBehaviour {
             obj.transform.localPosition = new Vector3(Item.positionX, Item.positionY, Item.positionZ);
             obj.transform.eulerAngles = new Vector3(Item.rotationX, Item.rotationY, Item.rotationZ);
             obj.transform.localScale = new Vector3(Item.scaleX, Item.scaleY, Item.scaleZ);
+            return obj;
+        }
+        return null;
+    }
+    private void LoadLocalPrefab(localDB.ObjectModel Item)
+    {
+        GameObject obj = GetLocalPrefab(Item);
+        if (obj != null)
+        {
             obj.transform.parent = gameObject.transform;
             SetCurrent3DObject(obj);
-
         }
     }
-    private void LoadLocalPrimitive(localDB.ObjectModel Item)
+    private static GameObject GetLocalPrimitive(localDB.ObjectModel Item)
     {
         PrimitiveType pt = PrimitiveType.Capsule;
 
@@ -172,9 +210,17 @@ public class MainSceneUI : MonoBehaviour {
             obj.transform.localPosition = new Vector3(Item.positionX, Item.positionY, Item.positionZ);
             obj.transform.eulerAngles = new Vector3(Item.rotationX, Item.rotationY, Item.rotationZ);
             obj.transform.localScale = new Vector3(Item.scaleX, Item.scaleY, Item.scaleZ);
+            return obj;
+        }
+        return null;
+    }
+    private void LoadLocalPrimitive(localDB.ObjectModel Item)
+    {
+        GameObject obj = GetLocalPrimitive(Item);
+        if (obj != null)
+        {
             obj.transform.parent = gameObject.transform;
             SetCurrent3DObject(obj);
-
         }
     }
     private void Button_OnClick(Text label)
@@ -210,6 +256,8 @@ public class MainSceneUI : MonoBehaviour {
                 }
                 break;
             case "Open":
+                StateManager.instance.ModelId = objectList.options[objectList.value].text;
+                StateManager.instance.currentModel = localItemsDictionary[StateManager.instance.ModelId];
                 SceneManager.LoadScene("RecognitionScene");
                 break;
             default:
