@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
+# Visual Studio 2017
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VF_DynamicReco", "VF_DynamicReco.csproj", "{B0A41176-08DB-A493-BC20-CC511AF47762}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VF_DynamicReco.Editor", "VF_DynamicReco.Editor.csproj", "{53B9D8AD-DFF8-43C3-E037-E69618227F16}"

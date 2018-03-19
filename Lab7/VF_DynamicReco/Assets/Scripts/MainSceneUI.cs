@@ -20,17 +20,24 @@ public class MainSceneUI : MonoBehaviour {
             return;
         }
         // populate the list
+        int index = -1;
+        int count = 0;
         this.objectList.ClearOptions();
         List<localDB.ObjectModel> list = localDB.GetObjectList();
         foreach (var o in list)
         {
             localItemsDictionary.Add(o.ID, o);
             LocalItemsKey.Add(o.ID);
+            if ((!string.IsNullOrEmpty(StateManager.instance.ModelId)) && (string.Equals(StateManager.instance.ModelId, o.ID)))
+                index = count;
+            count++;
         }
 
         this.objectList.AddOptions(this.LocalItemsKey);
-
-
+        if (!string.IsNullOrEmpty(StateManager.instance.ModelId))
+        {
+            this.objectList.value = index;
+        }
         var buttonList = GetComponentsInChildren<Button>();
         if (buttonList.Length == 0)
         {
@@ -58,7 +65,7 @@ public class MainSceneUI : MonoBehaviour {
             current3DObject = obj;
         }
     }
-    private static bool GetPrimitiveType(string name, out PrimitiveType type)
+    public static bool GetPrimitiveType(string name, out PrimitiveType type)
     {
         bool result = true;
         type = PrimitiveType.Capsule;
@@ -88,7 +95,7 @@ public class MainSceneUI : MonoBehaviour {
         }
         return result;
     }
-    private IEnumerator LoadRemoteAssetBundle(localDB.ObjectModel Item)
+    private IEnumerator LoadRemoteAssetBundle(localDB.ObjectModel Item, GameObject parentGameObject)
     {
         DontDestroyOnLoad(gameObject);
         // This is simply to get the elapsed time for this phase of AssetLoading.
@@ -112,10 +119,11 @@ public class MainSceneUI : MonoBehaviour {
             {
 
                 GameObject obj = Instantiate(prefab) as GameObject;
-                obj.transform.localPosition = new Vector3(Item.positionX, Item.positionY, Item.positionZ);
                 obj.transform.eulerAngles = new Vector3(Item.rotationX, Item.rotationY, Item.rotationZ);
                 obj.transform.localScale = new Vector3(Item.scaleX, Item.scaleY, Item.scaleZ);
-                obj.transform.parent = gameObject.transform;
+                if (parentGameObject != null)
+                    obj.transform.parent = parentGameObject.transform;
+                obj.transform.localPosition = new Vector3(Item.positionX, Item.positionY, Item.positionZ);
 
                 SetCurrent3DObject(obj);
             }
@@ -126,7 +134,7 @@ public class MainSceneUI : MonoBehaviour {
         }
 
     }
-    private static GameObject GetLocalAssetBundle(localDB.ObjectModel Item)
+    public static GameObject GetLocalAssetBundle(localDB.ObjectModel Item, GameObject parentGameObject)
     {
         var myLoadedAssetBundle = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, Item.AssetBundleName));
         if (myLoadedAssetBundle == null)
@@ -140,16 +148,18 @@ public class MainSceneUI : MonoBehaviour {
         {
 
             GameObject obj = Instantiate(prefab) as GameObject;
-            obj.transform.localPosition = new Vector3(Item.positionX, Item.positionY, Item.positionZ);
             obj.transform.eulerAngles = new Vector3(Item.rotationX, Item.rotationY, Item.rotationZ);
             obj.transform.localScale = new Vector3(Item.scaleX, Item.scaleY, Item.scaleZ);
+            if (parentGameObject != null)
+                obj.transform.parent = parentGameObject.transform;
+            obj.transform.localPosition = new Vector3(Item.positionX, Item.positionY, Item.positionZ);
             return obj;
         }
         return null;
     }
-    private void LoadLocalAssetBundle(localDB.ObjectModel Item)
+    private void LoadLocalAssetBundle(localDB.ObjectModel Item, GameObject parentGameObject)
     {
-        GameObject obj = GetLocalAssetBundle(Item);
+        GameObject obj = GetLocalAssetBundle(Item, parentGameObject);
         if (obj != null)
         {
             obj.transform.parent = gameObject.transform;
@@ -178,48 +188,53 @@ public class MainSceneUI : MonoBehaviour {
             }
         }
     }
-    private static GameObject  GetLocalPrefab(localDB.ObjectModel Item)
+    public static GameObject  GetLocalPrefab(localDB.ObjectModel Item, GameObject parentGameObject)
     {
         Object res = Resources.Load(Item.Name, typeof(GameObject));
         if (res != null)
         {
             GameObject obj = Instantiate(res) as GameObject;
-            obj.transform.localPosition = new Vector3(Item.positionX, Item.positionY, Item.positionZ);
             obj.transform.eulerAngles = new Vector3(Item.rotationX, Item.rotationY, Item.rotationZ);
             obj.transform.localScale = new Vector3(Item.scaleX, Item.scaleY, Item.scaleZ);
+            if (parentGameObject != null)
+                obj.transform.parent = parentGameObject.transform;
+            obj.transform.localPosition = new Vector3(Item.positionX, Item.positionY, Item.positionZ);
             return obj;
         }
         return null;
     }
-    private void LoadLocalPrefab(localDB.ObjectModel Item)
+    private void LoadLocalPrefab(localDB.ObjectModel Item, GameObject parentGameObject)
     {
-        GameObject obj = GetLocalPrefab(Item);
+        GameObject obj = GetLocalPrefab(Item, parentGameObject);
         if (obj != null)
         {
             obj.transform.parent = gameObject.transform;
             SetCurrent3DObject(obj);
         }
     }
-    private static GameObject GetLocalPrimitive(localDB.ObjectModel Item)
+    public static GameObject GetLocalPrimitive(localDB.ObjectModel Item, GameObject parentGameObject)
     {
         PrimitiveType pt = PrimitiveType.Capsule;
 
         if (GetPrimitiveType(Item.Name, out pt) == true)
         {
             GameObject obj = GameObject.CreatePrimitive(pt);
-            obj.transform.localPosition = new Vector3(Item.positionX, Item.positionY, Item.positionZ);
             obj.transform.eulerAngles = new Vector3(Item.rotationX, Item.rotationY, Item.rotationZ);
             obj.transform.localScale = new Vector3(Item.scaleX, Item.scaleY, Item.scaleZ);
+            if(parentGameObject!=null)
+            obj.transform.parent = parentGameObject.transform;
+            obj.transform.localPosition = new Vector3(Item.positionX, Item.positionY, Item.positionZ);
+
             return obj;
         }
         return null;
     }
-    private void LoadLocalPrimitive(localDB.ObjectModel Item)
+    private void LoadLocalPrimitive(localDB.ObjectModel Item, GameObject parentGameObject)
     {
-        GameObject obj = GetLocalPrimitive(Item);
+        GameObject obj = GetLocalPrimitive(Item, parentGameObject);
         if (obj != null)
         {
-            obj.transform.parent = gameObject.transform;
+            
             SetCurrent3DObject(obj);
         }
     }
@@ -237,21 +252,25 @@ public class MainSceneUI : MonoBehaviour {
                 var Item = localItemsDictionary[selectedItem];
                 if (Item != null)
                 {
-                    if (Item.Type == localDB.ObjectModel.TypePrimitive)
-                    {
-                        LoadLocalPrimitive(Item);
-                    }
-                    else if (Item.Type == localDB.ObjectModel.TypeLocalPrefab)
-                    {
-                        LoadLocalPrefab(Item);
-                    }
-                    else if (Item.Type == localDB.ObjectModel.TypeLocalAssetBundle)
-                    {
-                        LoadLocalAssetBundle(Item);
-                    }
-                    else if (Item.Type == localDB.ObjectModel.TypeRemoteAssetBundle)
-                    {
-                        StartCoroutine(LoadRemoteAssetBundle(Item));
+                    var target = GameObject.Find("TargetText");
+                    if (target != null)
+                    { 
+                        if (Item.Type == localDB.ObjectModel.TypePrimitive)
+                        {
+                            LoadLocalPrimitive(Item, target);
+                        }
+                        else if (Item.Type == localDB.ObjectModel.TypeLocalPrefab)
+                        {
+                            LoadLocalPrefab(Item, target);
+                        }
+                        else if (Item.Type == localDB.ObjectModel.TypeLocalAssetBundle)
+                        {
+                            LoadLocalAssetBundle(Item, target);
+                        }
+                        else if (Item.Type == localDB.ObjectModel.TypeRemoteAssetBundle)
+                        {
+                            StartCoroutine(LoadRemoteAssetBundle(Item, target));
+                        }
                     }
                 }
                 break;

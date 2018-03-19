@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using System.IO;
 using AssetBundles;
 using UnityEngine.SceneManagement;
+using Vuforia;
 
 public class RecognitionSceneUI : MonoBehaviour {
 
@@ -26,6 +27,43 @@ public class RecognitionSceneUI : MonoBehaviour {
             var label = button.GetComponentInChildren<Text>();
             button.onClick.AddListener(() => Button_OnClick(label));
         }
+
+        if ((StateManager.instance != null) &&(StateManager.instance.currentModel != null))
+        {
+           // var objectTracker = TrackerManager.Instance.GetTracker<MultiTarget>();
+            var target = GameObject.Find("MultiTarget");
+            if (target != null)
+            {
+                var Item = StateManager.instance.currentModel;
+                if (Item != null)
+                {
+                    GameObject obj = null;
+                    if (Item.Type == localDB.ObjectModel.TypePrimitive)
+                    {
+                        obj = MainSceneUI.GetLocalPrimitive(Item,target);
+                    }
+                    else if (Item.Type == localDB.ObjectModel.TypeLocalPrefab)
+                    {
+                        obj = MainSceneUI.GetLocalPrefab(Item, target);
+                    }
+                    else if (Item.Type == localDB.ObjectModel.TypeLocalAssetBundle)
+                    {
+                        obj = MainSceneUI.GetLocalAssetBundle(Item, target);
+                    }
+                    else if (Item.Type == localDB.ObjectModel.TypeRemoteAssetBundle)
+                    {
+                        obj = MainSceneUI.GetLocalAssetBundle(Item, target);
+                    }
+                    if(obj!=null)
+                    {
+                       // obj.transform.parent = target.transform;
+                        current3DObject = obj;
+                    }
+                }
+            }
+        }
+
+
     }
 
     private void Button_OnClick(Text label)
@@ -38,7 +76,14 @@ public class RecognitionSceneUI : MonoBehaviour {
         switch (label.text)
         {
             case "Save":
-                SceneManager.LoadScene("PositionScene");
+                {
+
+                    if (current3DObject != null)
+                    {
+                        StateManager.instance.ModelTargetPosition = current3DObject.transform.position;
+                        SceneManager.LoadScene("PositionScene");
+                    }
+                }
                 break;
             case "Back":
                 SceneManager.LoadScene("MainScene");
