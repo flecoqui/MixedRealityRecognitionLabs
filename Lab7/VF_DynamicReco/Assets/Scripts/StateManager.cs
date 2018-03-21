@@ -20,6 +20,7 @@ public class StateManager : MonoBehaviour
         else if (instance != this)
         {
             Destroy(gameObject);
+            return;
         }
 
         //Sets this to not be destroyed when reloading scene

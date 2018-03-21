@@ -26,46 +26,61 @@ public class RecognitionSceneUI : MonoBehaviour {
         {
             var label = button.GetComponentInChildren<Text>();
             button.onClick.AddListener(() => Button_OnClick(label));
-        }
-
-        if ((StateManager.instance != null) &&(StateManager.instance.currentModel != null))
-        {
-           // var objectTracker = TrackerManager.Instance.GetTracker<MultiTarget>();
-            var target = GameObject.Find("MultiTarget");
-            if (target != null)
+            if ((label.text == "Camera") || (label.text == "ARCamera"))
             {
-                var Item = StateManager.instance.currentModel;
-                if (Item != null)
-                {
-                    GameObject obj = null;
-                    if (Item.Type == localDB.ObjectModel.TypePrimitive)
-                    {
-                        obj = MainSceneUI.GetLocalPrimitive(Item,target);
-                    }
-                    else if (Item.Type == localDB.ObjectModel.TypeLocalPrefab)
-                    {
-                        obj = MainSceneUI.GetLocalPrefab(Item, target);
-                    }
-                    else if (Item.Type == localDB.ObjectModel.TypeLocalAssetBundle)
-                    {
-                        obj = MainSceneUI.GetLocalAssetBundle(Item, target);
-                    }
-                    else if (Item.Type == localDB.ObjectModel.TypeRemoteAssetBundle)
-                    {
-                        obj = MainSceneUI.GetLocalAssetBundle(Item, target);
-                    }
-                    if(obj!=null)
-                    {
-                       // obj.transform.parent = target.transform;
-                        current3DObject = obj;
-                    }
-                }
+                if (CameraManager.Instance.cameraType == CameraManager.eCameraType.mCamera)
+                    label.text = "ARCamera";
+                else
+                    label.text = "Camera";
             }
         }
 
+        //if ((StateManager.instance != null) &&(StateManager.instance.currentModel != null))
+        //{
+        //    var target = GameObject.Find("MultiTarget");
+        //    if (target != null)
+        //    {
+        //        var Item = StateManager.instance.currentModel;
+        //        if (Item != null)
+        //        {
+        //            GameObject obj = null;
+        //            if (Item.Type == localDB.ObjectModel.TypePrimitive)
+        //            {
+        //                obj = MainSceneUI.GetLocalPrimitive(Item,target);
+        //            }
+        //            else if (Item.Type == localDB.ObjectModel.TypeLocalPrefab)
+        //            {
+        //                obj = MainSceneUI.GetLocalPrefab(Item, target);
+        //            }
+        //            else if (Item.Type == localDB.ObjectModel.TypeLocalAssetBundle)
+        //            {
+        //                obj = MainSceneUI.GetLocalAssetBundle(Item, target);
+        //            }
+        //            else if (Item.Type == localDB.ObjectModel.TypeRemoteAssetBundle)
+        //            {
+        //                obj = MainSceneUI.GetLocalAssetBundle(Item, target);
+        //            }
+        //            if(obj!=null)
+        //            {
+        //                current3DObject = obj;
+        //            }
+        //        }
+        //    }
+        //}
+
 
     }
-
+    private void Start()
+    {
+        CameraManager.Instance.setCamera(onCameraReady, CameraManager.eCameraType.vCamera);
+    }
+    private void onCameraReady()
+    {
+        if (CameraManager.Instance.cameraType == CameraManager.eCameraType.mCamera)
+            Debug.Log("Main Camera is ready");
+        else
+            Debug.Log("AR Camera is ready");
+    }
     private void Button_OnClick(Text label)
     {
         if (label == null)
@@ -87,6 +102,14 @@ public class RecognitionSceneUI : MonoBehaviour {
                 break;
             case "Back":
                 SceneManager.LoadScene("MainScene");
+                break;
+            case "ARCamera":
+                CameraManager.Instance.setCamera(onCameraReady, CameraManager.eCameraType.vCamera);
+                label.text = "Camera";
+                break;
+            case "Camera":
+                CameraManager.Instance.setCamera(onCameraReady, CameraManager.eCameraType.mCamera);
+                label.text = "ARCamera";
                 break;
             default:
                 Debug.LogWarningFormat("Button '{0}' not handled.", label.text);

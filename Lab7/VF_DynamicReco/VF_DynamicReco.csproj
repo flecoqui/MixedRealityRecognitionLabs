@@ -216,10 +216,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\ARCamera.cs" />
     <Compile Include="Assets\Scripts\AssetBundleLoadOperation.cs" />
     <Compile Include="Assets\Scripts\AssetBundleManager.cs" />
-    <Compile Include="Assets\Scripts\GestureManager.cs" />
+    <Compile Include="Assets\Scripts\CameraManager.cs" />
+    <Compile Include="Assets\Scripts\DontDestroyARCamera.cs" />
+    <Compile Include="Assets\Scripts\DontDestroyTarget.cs" />
     <Compile Include="Assets\Scripts\LoadAssets.cs" />
     <Compile Include="Assets\Scripts\Loader.cs" />
     <Compile Include="Assets\Scripts\localDB.cs" />
@@ -227,9 +228,8 @@
     <Compile Include="Assets\Scripts\PositionSceneUI.cs" />
     <Compile Include="Assets\Scripts\RecognitionSceneUI.cs" />
     <Compile Include="Assets\Scripts\StateManager.cs" />
-    <Compile Include="Assets\Scripts\UIItems.cs" />
     <Compile Include="Assets\Scripts\Utility.cs" />
-    <Compile Include="Assets\Scripts\VuforiaManager.cs" />
+    <Compile Include="Assets\Scripts\VuforiaCameraIssueFix.cs" />
     <Compile Include="Assets\Vuforia\Scripts\DefaultInitializationErrorHandler.cs" />
     <Compile Include="Assets\Vuforia\Scripts\DefaultSmartTerrainEventHandler.cs" />
     <Compile Include="Assets\Vuforia\Scripts\DefaultTrackableEventHandler.cs" />
