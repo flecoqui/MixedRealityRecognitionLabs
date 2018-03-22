@@ -1,9 +1,9 @@
-# Mixed Reality Recognition Labs
+# Windows Mixed Reality Recognition Labs
 
 
 Overview
 ---------
-This github repo contains sample applications used for the Mixed Reality Recognition Labs. 
+This github repo contains sample applications used for the Windows Mixed Reality Recognition Labs. 
 Those applications are Windows Mixed Reality Applications running either on Hololens or Windows Mixed Reality Immersive headset.
 The applications 
 
@@ -52,7 +52,7 @@ Building the applications
 8. Press Ctrl+Shift+B, or select **Build** \> **Build Solution** to build the solution.
 
 
-Building the applications
+Debugging the applications
 --------------------------
 
 1. Connect your Hololens to your machine with the USB cable
@@ -67,9 +67,9 @@ Building the applications
 Next steps
 -----------
 
-Those recognition Labs are based on Vuforia. Those Labs could be extends to support the following features:</p>
+Those recognition Labs are based on Vuforia. Those Labs could be extended to support the following features:</p>
 1.  Support of other recognition libraries like dlib.net, Cognitive Services Computer Vision</p>
-2.  Support of the latest verison of Unity.</p>
+2.  Support of the latest version of Unity.</p>
 
  
 
