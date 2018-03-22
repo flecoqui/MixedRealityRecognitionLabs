@@ -34,25 +34,39 @@ Building the applications
 --------------------------
 
 1. Start Unity, **Open** the folder where the project is installed on your machine.
-2. Once the project is opened, 
+2. Once the project is opened,select **File** \> **Build Settings** \>
+
 ![](https://raw.githubusercontent.com/flecoqui/MixedRealityRecognitionLabs/master/Docs/settings.png)
-3. Start Microsoft Visual Studio 2017 and select **File** \> **** \> **Project/Solution**.
-3. Starting in the folder where you unzipped the samples, go to the Samples subfolder, then the subfolder for this specific sample, then the subfolder for your preferred language (C++, C#, or JavaScript). Double-click the Visual Studio 2015 Solution (.sln) file.
-4. Press Ctrl+Shift+B, or select **Build** \> **Build Solution**.
+
+3. On the dialog box **Build Settings** select **Universal Windows Platform** and click on button **Switch platform**.
+4. Click on **Unity C# projects** check box.
+5. Click on button **Build**. Select or Create the folder where you want to store the Visual Studio solution. Unity is now generating the Visual Studio solution. After few seconds the solution is generated.
+6. Double-Click on the solution file, the Visual Studio will automacially open the Visual Studio project.
+7. On the tool bar, select **Debug**, **x86** and **Device**
+
+![](https://raw.githubusercontent.com/flecoqui/MixedRealityRecognitionLabs/master/Docs/vs.png)
+
+8. Press Ctrl+Shift+B, or select **Build** \> **Build Solution** to build the solution.
 
 
-**Deploying and running the sample**
-1.  To debug the sample and then run it, press F5 or select **Debug** \> **Start Debugging**. To run the sample without debugging, press Ctrl+F5 or select **Debug** \> **Start Without Debugging**.
+Building the applications
+--------------------------
 
+1. Connect your Hololens to your machine with the USB cable
+2. Power-on the Hololens.
+3. On the tool bar, select **Debug**, **x86** and **Device**
+
+![](https://raw.githubusercontent.com/flecoqui/MixedRealityRecognitionLabs/master/Docs/vs.png)
+
+4. To debug the application and then run it, press F5 or select **Debug** \> **Start Debugging**. To run the application without debugging, press Ctrl+F5 or select **Debug** \> **Start Without Debugging**.
 
 
 Next steps
---------------
+-----------
 
-The Universal Media Player C# Sample Applicaton could be improved to support the following features:</p>
-1.  Support of Project Rome to launch remotely TestMediaApp from one device to another device</p>
-2.  Support of several pages : Player Page, Companion Page, Playlist Page and Settings Page.</p>
-3.  Support of a new JSON model to support music playlist (Artist, Album), TV channels  </p>
+Those recognition Labs are based on Vuforia. Those Labs could be extends to support the following features:</p>
+1.  Support of other recognition libraries like dlib.net, Cognitive Services Computer Vision</p>
+2.  Support of the latest verison of Unity.</p>
 
  
 
