@@ -17,7 +17,10 @@ Below the list of Labs:<p/>
 	- **Lab 4**: Remoting Host Sample application running on Windows 10 used to stream 3D models towards Hololens running the Holographic Remoting Player. Further information [here](https://docs.microsoft.com/en-us/windows/mixed-reality/holographic-remoting-player) </p>
 	- **Lab 5**: How to generate AssetBundles, Hosting AssetBundles on Azure Web App, Loading AssetBundles hosted on a Web Site with my Windows Mixed Reality application</p>	
     - **Lab 6**: How to create programmatically GameObject from primitive objects (cube, sphere, ...), prefabs objects, local AssetBundles, remote AssetBundles.</p>	
-    - **Lab 7**: How to display programmatically GameObject when the application finds a MultiTarget object. The GameObject are created from primitive objects (cube, sphere, ...), prefabs objects, local AssetBundles, remote AssetBundles. This Labs contains 3 applications: Test_HoloNavigation, Test_HoloVuforia, VF_DynamicReco </p>
+    - **Lab 7**: How to display programmatically GameObject when the application finds a MultiTarget object. The GameObject are created from primitive objects (cube, sphere, ...), prefabs objects, local AssetBundles, remote AssetBundles. This Labs contains 3 applications:</p>
+    **Test_HoloNavigation**: basic navigation between scenes,</p>
+    **Test_HoloVuforia**: sample application which activate Vuforia on individual scene, this sample is a turn around to the Vuforia bugs described [here](https://forum.unity.com/threads/use-ar-camera-vuforia-core-in-individual-scene-not-entire-project.498489/)</p>
+    **VF_DynamicReco**: final application </p>
 
 Prerequisites
 --------------
