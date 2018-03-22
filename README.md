@@ -1,2 +1,59 @@
-# MixedRealityRecognitionLabs
-Mixed Reality Labs to detect 2D and 3D objects  
+# Mixed Reality Recognition Labs
+
+
+Overview
+---------
+This github repo contains sample applications used for the Mixed Reality Recognition Labs. 
+Those applications are Windows Mixed Reality Applications running either on Hololens or Windows Mixed Reality Immersive headset.
+The applications 
+
+
+The Labs
+---------
+Below the list of Labs:<p/>
+	- **Lab 1**: 2D recognition using Vuforia</p>
+	- **Lab 2**: 3D recognition using Vuforia</p>
+	- **Lab 3**: Using Assimp to convert STL files into OBJ files supported by Unity</p>
+	- **Lab 4**: Remoting Host Sample application running on Windows 10 used to stream 3D models towards Hololens running the Holographic Remoting Player. Further information [here](https://docs.microsoft.com/en-us/windows/mixed-reality/holographic-remoting-player) </p>
+	- **Lab 5**: How to generate AssetBundles, Hosting AssetBundles on Azure Web App, Loading AssetBundles hosted on a Web Site with my Windows Mixed Reality application</p>	
+    - **Lab 6**: How to create programmatically GameObject from primitive objects (cube, sphere, ...), prefabs objects, local AssetBundles, remote AssetBundles.</p>	
+    - **Lab 7**: How to display programmatically GameObject when the application finds a MultiTarget object. The GameObject are created from primitive objects (cube, sphere, ...), prefabs objects, local AssetBundles, remote AssetBundles. This Labs contains 3 applications: Test_HoloNavigation, Test_HoloVuforia, VF_DynamicReco </p>
+
+Prerequisites
+--------------
+
+In order to build the applications associated with each lab, you need: 
+1. A machine running Windows 10 Fall Creator Update (RS3)
+2. [Visual Studio 2017](https://www.visualstudio.com/downloads/ )
+3. [Windows 10 SDK Fall Creator Update](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk)
+4. [Unity version 2017.2.1p2](https://unity3d.com/unity/qa/patch-releases). While  installing Unity, don't forget to select Vuforia, Windows Store ILCPP Scripting Backend, Windows Store .NET Scripting Backend options.
+
+![](https://raw.githubusercontent.com/flecoqui/MixedRealityRecognitionLabs/master/Docs/options.png)
+
+Building the applications
+--------------------------
+
+1. Start Unity, **Open** the folder where the project is installed on your machine.
+2. Once the project is opened, 
+![](https://raw.githubusercontent.com/flecoqui/MixedRealityRecognitionLabs/master/Docs/settings.png)
+3. Start Microsoft Visual Studio 2017 and select **File** \> **** \> **Project/Solution**.
+3. Starting in the folder where you unzipped the samples, go to the Samples subfolder, then the subfolder for this specific sample, then the subfolder for your preferred language (C++, C#, or JavaScript). Double-click the Visual Studio 2015 Solution (.sln) file.
+4. Press Ctrl+Shift+B, or select **Build** \> **Build Solution**.
+
+
+**Deploying and running the sample**
+1.  To debug the sample and then run it, press F5 or select **Debug** \> **Start Debugging**. To run the sample without debugging, press Ctrl+F5 or select **Debug** \> **Start Without Debugging**.
+
+
+
+Next steps
+--------------
+
+The Universal Media Player C# Sample Applicaton could be improved to support the following features:</p>
+1.  Support of Project Rome to launch remotely TestMediaApp from one device to another device</p>
+2.  Support of several pages : Player Page, Companion Page, Playlist Page and Settings Page.</p>
+3.  Support of a new JSON model to support music playlist (Artist, Album), TV channels  </p>
+
+ 
+
+  
