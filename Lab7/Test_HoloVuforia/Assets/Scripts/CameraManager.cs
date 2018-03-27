@@ -67,6 +67,8 @@ public class CameraManager : MonoBehaviour
                 this.mCamera = c;
             else if (c.gameObject.name == "ARCamera")
                 this.vCamera = c;
+            if ((this.vCamera != null) && (this.mCamera != null))
+                break;
 
         }
         if((this.vCamera == null)&&(this.mCamera == null))

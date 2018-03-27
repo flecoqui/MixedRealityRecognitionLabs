@@ -95,7 +95,7 @@ public class MainSceneUI : MonoBehaviour {
         }
         return result;
     }
-    private IEnumerator LoadRemoteAssetBundle(localDB.ObjectModel Item, GameObject parentGameObject)
+    private IEnumerator OldLoadRemoteAssetBundle(localDB.ObjectModel Item, GameObject parentGameObject)
     {
         DontDestroyOnLoad(gameObject);
         // This is simply to get the elapsed time for this phase of AssetLoading.
@@ -134,32 +134,92 @@ public class MainSceneUI : MonoBehaviour {
         }
 
     }
+    public static GameObject GetRemoteAssetBundle(localDB.ObjectModel Item, GameObject parentGameObject)
+    {
+        RemoveAssetBundle(Item.AssetBundleName);
+        // This is simply to get the elapsed time for this phase of AssetLoading.
+        float startTime = Time.realtimeSinceStartup;
+        AssetBundleManager.SetSourceAssetBundleURL(Item.AssetBundleUri);
+        var InitRequest = AssetBundleManager.Initialize();
+        if (InitRequest != null)
+            WaitCoroutine(InitRequest);
+        var assetRequest = AssetBundleManager.LoadAssetAsync(Item.AssetBundleName, Item.Name, typeof(GameObject));
+        if (assetRequest == null)
+            return null;
+        WaitCoroutine(assetRequest);
+        GameObject obj = null;
+        if (assetRequest != null)
+        {
+
+            // Get the asset.
+            GameObject prefab = assetRequest.GetAsset<GameObject>();
+            // code below could be used to position the AssetBundles
+            //prefab.transform.position = new Vector3(0,1,4); 
+            if (prefab != null)
+            {
+
+                obj = Instantiate(prefab) as GameObject;
+                obj.transform.eulerAngles = new Vector3(Item.rotationX, Item.rotationY, Item.rotationZ);
+                obj.transform.localScale = new Vector3(Item.scaleX, Item.scaleY, Item.scaleZ);
+                if (parentGameObject != null)
+                    obj.transform.parent = parentGameObject.transform;
+                obj.transform.localPosition = new Vector3(Item.positionX, Item.positionY, Item.positionZ);
+            }
+
+            // Calculate and display the elapsed time.
+            float elapsedTime = Time.realtimeSinceStartup - startTime;
+            Debug.Log(Item.Name + (prefab == null ? " was not" : " was") + " loaded successfully in " + elapsedTime + " seconds");
+        }
+        return obj;
+    }
+    public static void RemoveAssetBundle(string name)
+    {
+        foreach (AssetBundle a in AssetBundle.GetAllLoadedAssetBundles())
+        {
+            if (a.name == name)
+            {
+                a.Unload(true);
+                break;
+            }
+        }
+    }
     public static GameObject GetLocalAssetBundle(localDB.ObjectModel Item, GameObject parentGameObject)
     {
+        RemoveAssetBundle(Item.AssetBundleName);
         var myLoadedAssetBundle = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, Item.AssetBundleName));
         if (myLoadedAssetBundle == null)
         {
             Debug.Log("Failed to load AssetBundle from " + Application.streamingAssetsPath + "!");
             return null;
         }
-
+        GameObject obj = null;
         var prefab = myLoadedAssetBundle.LoadAsset<GameObject>(Item.Name);
         if (prefab != null)
         {
 
-            GameObject obj = Instantiate(prefab) as GameObject;
+            obj = Instantiate(prefab) as GameObject;
             obj.transform.eulerAngles = new Vector3(Item.rotationX, Item.rotationY, Item.rotationZ);
             obj.transform.localScale = new Vector3(Item.scaleX, Item.scaleY, Item.scaleZ);
             if (parentGameObject != null)
                 obj.transform.parent = parentGameObject.transform;
             obj.transform.localPosition = new Vector3(Item.positionX, Item.positionY, Item.positionZ);
-            return obj;
         }
-        return null;
+
+        return obj;
     }
     private void LoadLocalAssetBundle(localDB.ObjectModel Item, GameObject parentGameObject)
     {
         GameObject obj = GetLocalAssetBundle(Item, parentGameObject);
+        if (obj != null)
+        {
+            obj.transform.parent = gameObject.transform;
+            SetCurrent3DObject(obj);
+
+        }
+    }
+    private void LoadRemoteAssetBundle(localDB.ObjectModel Item, GameObject parentGameObject)
+    {
+        GameObject obj = GetRemoteAssetBundle(Item, parentGameObject);
         if (obj != null)
         {
             obj.transform.parent = gameObject.transform;
@@ -269,7 +329,7 @@ public class MainSceneUI : MonoBehaviour {
                         }
                         else if (Item.Type == localDB.ObjectModel.TypeRemoteAssetBundle)
                         {
-                            StartCoroutine(LoadRemoteAssetBundle(Item, target));
+                            LoadRemoteAssetBundle(Item, target);
                         }
                     }
                 }

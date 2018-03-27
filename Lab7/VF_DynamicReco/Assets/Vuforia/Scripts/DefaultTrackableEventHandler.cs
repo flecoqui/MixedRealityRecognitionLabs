@@ -8,7 +8,12 @@ Confidential and Proprietary - Protected under copyright and other laws.
 
 using UnityEngine;
 using Vuforia;
-
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using System.IO;
+using AssetBundles;
+using UnityEngine.SceneManagement;
 /// <summary>
 ///     A custom handler that implements the ITrackableEventHandler interface.
 /// </summary>
@@ -85,8 +90,32 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
         // Enable canvas':
         foreach (var component in canvasComponents)
             component.enabled = true;
-    }
 
+        EnableSaveButton(true);
+    }
+    void EnableSaveButton(bool bEnable)
+    {
+        if (RecognitionSceneUI.Instance != null)
+        {
+            var buttonList = RecognitionSceneUI.Instance.GetComponentsInChildren<Button>();
+            if (buttonList != null)
+            {
+                foreach (var button in buttonList)
+                {
+                    var label = button.GetComponentInChildren<Text>();
+                    if ((label.text == "Save") || (label.text == "Do Nothing"))
+                    {
+                        button.enabled = bEnable;
+                        if (bEnable == true)
+                            label.text = "Save";
+                        else
+                            label.text = "Do Nothing";
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
     protected virtual void OnTrackingLost()
     {
@@ -105,6 +134,8 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
         // Disable canvas':
         foreach (var component in canvasComponents)
             component.enabled = false;
+
+        EnableSaveButton(false);
     }
 
     #endregion // PRIVATE_METHODS

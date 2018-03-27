@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2017
+# Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test_HoloVuforia", "Test_HoloVuforia.csproj", "{E8DE51B7-0728-EF28-DE46-F62149348230}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test_HoloVuforia.Editor", "Test_HoloVuforia.Editor.csproj", "{FB059A44-5C04-398B-969C-102FA89FB60E}"

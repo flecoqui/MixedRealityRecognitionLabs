@@ -7,7 +7,7 @@ using AssetBundles;
 using UnityEngine.SceneManagement;
 public class PositionSceneUI : MonoBehaviour {
     private GameObject current3DObject = null;
-    private bool bShow = true;
+
     private void Awake()
     {
         var buttonList = GetComponentsInChildren<Button>();
@@ -54,6 +54,8 @@ public class PositionSceneUI : MonoBehaviour {
                     if (obj != null)
                     {
                         obj.transform.position = StateManager.instance.ModelTargetPosition;
+                        obj.transform.eulerAngles = StateManager.instance.ModelTargetAngles;
+                        obj.transform.localScale = StateManager.instance.ModelTargetScale;
                         current3DObject = obj;
                     }
                 }
@@ -72,17 +74,30 @@ public class PositionSceneUI : MonoBehaviour {
             case "Hide":
             case "Show":
                 {
-                    current3DObject.GetComponent<Renderer>().enabled = !current3DObject.GetComponent<Renderer>().enabled;
-                    var buttonList = GetComponentsInChildren<Button>();
-                    foreach (var button in buttonList)
+                    List<Renderer> list = new List<Renderer>();
+                    current3DObject.GetComponents<Renderer>(list);
+                    if (list.Count == 0)
                     {
-                        var edit = button.GetComponentInChildren<Text>();
-                        if ((string.Equals(edit.text, "Hide"))|| (string.Equals(edit.text, "Show")))
+                        current3DObject.GetComponentsInChildren<Renderer>(list);
+                    }
+                    if (list.Count > 0)
+                    {
+                        bool bRenderer = false;
+                        foreach (var r in list)
                         {
-                            if (current3DObject.GetComponent<Renderer>().enabled == true)
-                                edit.text = "Hide";
-                            else
-                                edit.text = "Show";
+                            bRenderer = r.enabled = !r.enabled;
+                        }
+                        var buttonList = GetComponentsInChildren<Button>();
+                        foreach (var button in buttonList)
+                        {
+                            var edit = button.GetComponentInChildren<Text>();
+                            if ((string.Equals(edit.text, "Hide")) || (string.Equals(edit.text, "Show")))
+                            {
+                                if (bRenderer == true)
+                                    edit.text = "Hide";
+                                else
+                                    edit.text = "Show";
+                            }
                         }
                     }
                 }

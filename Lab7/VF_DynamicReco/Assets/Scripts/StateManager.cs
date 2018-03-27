@@ -10,6 +10,8 @@ public class StateManager : MonoBehaviour
     public string ModelId = string.Empty;
     public localDB.ObjectModel currentModel = null;
     public Vector3 ModelTargetPosition = Vector3.forward;
+    public Vector3 ModelTargetAngles;
+    public Vector3 ModelTargetScale;
 
     private void Awake()
     {
