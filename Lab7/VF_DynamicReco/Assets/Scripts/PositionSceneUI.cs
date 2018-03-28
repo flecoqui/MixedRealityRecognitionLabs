@@ -5,9 +5,19 @@ using UnityEngine.UI;
 using System.IO;
 using AssetBundles;
 using UnityEngine.SceneManagement;
-public class PositionSceneUI : MonoBehaviour {
+public class PositionSceneUI : AssetLoaderUI {
     private GameObject current3DObject = null;
+    public void AssetLoaded(GameObject obj)
+    {
+        if (obj != null)
+        {
+            obj.transform.position = StateManager.instance.ModelTargetPosition;
+            obj.transform.eulerAngles = StateManager.instance.ModelTargetAngles;
+            obj.transform.localScale = StateManager.instance.ModelTargetScale;
+            current3DObject = obj;
 
+        }
+    }
     private void Awake()
     {
         var buttonList = GetComponentsInChildren<Button>();
@@ -31,34 +41,30 @@ public class PositionSceneUI : MonoBehaviour {
         if ((StateManager.instance != null) && (StateManager.instance.currentModel != null))
         {
 
-                var Item = StateManager.instance.currentModel;
-                if (Item != null)
+            var Item = StateManager.instance.currentModel;
+            if (Item != null)
+            {
+                GameObject obj = null;
+                if (Item.Type == localDB.ObjectModel.TypePrimitive)
                 {
-                    GameObject obj = null;
-                    if (Item.Type == localDB.ObjectModel.TypePrimitive)
-                    {
-                        obj = MainSceneUI.GetLocalPrimitive(Item, null);
-                    }
-                    else if (Item.Type == localDB.ObjectModel.TypeLocalPrefab)
-                    {
-                        obj = MainSceneUI.GetLocalPrefab(Item, null);
-                    }
-                    else if (Item.Type == localDB.ObjectModel.TypeLocalAssetBundle)
-                    {
-                        obj = MainSceneUI.GetLocalAssetBundle(Item, null);
-                    }
-                    else if (Item.Type == localDB.ObjectModel.TypeRemoteAssetBundle)
-                    {
-                        obj = MainSceneUI.GetLocalAssetBundle(Item, null);
-                    }
-                    if (obj != null)
-                    {
-                        obj.transform.position = StateManager.instance.ModelTargetPosition;
-                        obj.transform.eulerAngles = StateManager.instance.ModelTargetAngles;
-                        obj.transform.localScale = StateManager.instance.ModelTargetScale;
-                        current3DObject = obj;
-                    }
+                    obj = GetLocalPrimitive(Item, null);
+                    AssetLoaded(obj);
                 }
+                else if (Item.Type == localDB.ObjectModel.TypeLocalPrefab)
+                {
+                    obj = GetLocalPrefab(Item, null);
+                    AssetLoaded(obj);
+                }
+                else if (Item.Type == localDB.ObjectModel.TypeLocalAssetBundle)
+                {
+                    obj = GetLocalAssetBundle(Item, null);
+                    AssetLoaded(obj);
+                }
+                else if (Item.Type == localDB.ObjectModel.TypeRemoteAssetBundle)
+                {
+                    StartCoroutine(GetRemoteAssetBundleAsync(Item, null, AssetLoaded));
+                }
+            }
         }
     }
 

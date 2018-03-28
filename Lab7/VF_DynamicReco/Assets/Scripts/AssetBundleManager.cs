@@ -95,11 +95,12 @@ namespace AssetBundles
 		{
 			get
 			{
-				if (m_SimulateAssetBundleInEditor == -1)
-					m_SimulateAssetBundleInEditor = EditorPrefs.GetBool(kSimulateAssetBundles, true) ? 1 : 0;
-				
-				return m_SimulateAssetBundleInEditor != 0;
-			}
+                if (m_SimulateAssetBundleInEditor == -1)
+                    m_SimulateAssetBundleInEditor = EditorPrefs.GetBool(kSimulateAssetBundles, true) ? 1 : 0;
+
+                return m_SimulateAssetBundleInEditor != 0;
+                // return false;
+            }
 			set
 			{
 				int newValue = value ? 1 : 0;
@@ -380,23 +381,40 @@ namespace AssetBundles
 			m_Dependencies.Remove(assetBundleName);
 		}
 	
-		static protected void UnloadAssetBundleInternal(string assetBundleName)
-		{
-			string error;
-			LoadedAssetBundle bundle = GetLoadedAssetBundle(assetBundleName, out error);
-			if (bundle == null)
-				return;
-	
-			if (--bundle.m_ReferencedCount == 0)
-			{
-				bundle.m_AssetBundle.Unload(false);
-				m_LoadedAssetBundles.Remove(assetBundleName);
-	
-				Log(LogType.Info, assetBundleName + " has been unloaded successfully");
-			}
-		}
-	
-		void Update()
+		static public void UnloadAllAssetBundles()
+        {
+
+
+            List<string> list = new List<string>();
+            if(list!=null)
+            {
+                foreach (var b in m_LoadedAssetBundles.Keys)
+                    list.Add(b);
+
+                for (int i = list.Count - 1; i >= 0; i--)
+                    UnloadAssetBundle(list[i]);
+            }
+
+            m_LoadedAssetBundles.Clear();
+
+        }
+        static public void UnloadAssetBundleInternal(string assetBundleName)
+        {
+            string error;
+            LoadedAssetBundle bundle = GetLoadedAssetBundle(assetBundleName, out error);
+            if (bundle == null)
+                return;
+
+            if (--bundle.m_ReferencedCount == 0)
+            {
+                if(bundle.m_AssetBundle != null)
+                    bundle.m_AssetBundle.Unload(false);
+                m_LoadedAssetBundles.Remove(assetBundleName);
+
+                Log(LogType.Info, assetBundleName + " has been unloaded successfully");
+            }
+        }
+        void Update()
 		{
 			// Collect all the finished WWWs.
 			var keysToRemove = new List<string>();

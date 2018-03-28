@@ -6,13 +6,15 @@ using System.IO;
 using AssetBundles;
 using UnityEngine.SceneManagement;
 
-public class MainSceneUI : MonoBehaviour {
+public class MainSceneUI : AssetLoaderUI {
     private Dropdown objectList;
     private List<string> LocalItemsKey = new List<string>();
     private Dictionary<string, localDB.ObjectModel> localItemsDictionary = new Dictionary<string, localDB.ObjectModel>();
     private GameObject current3DObject = null;
+    public static MainSceneUI Instance;
     private void Awake()
     {
+        Instance = this;
         this.objectList = GetComponentInChildren<Dropdown>();
         if (this.objectList == null)
         {
@@ -65,148 +67,12 @@ public class MainSceneUI : MonoBehaviour {
             current3DObject = obj;
         }
     }
-    public static bool GetPrimitiveType(string name, out PrimitiveType type)
-    {
-        bool result = true;
-        type = PrimitiveType.Capsule;
-        switch (name)
-        {
-            case "Sphere":
-                type = PrimitiveType.Sphere;
-                break;
-            case "Capsule":
-                type = PrimitiveType.Capsule;
-                break;
-            case "Cylinder":
-                type = PrimitiveType.Cylinder;
-                break;
-            case "Cube":
-                type = PrimitiveType.Cube;
-                break;
-            case "Plane":
-                type = PrimitiveType.Plane;
-                break;
-            case "Quad":
-                type = PrimitiveType.Quad;
-                break;
-            default:
-                result = false;
-                break;
-        }
-        return result;
-    }
-    private IEnumerator OldLoadRemoteAssetBundle(localDB.ObjectModel Item, GameObject parentGameObject)
-    {
-        DontDestroyOnLoad(gameObject);
-        // This is simply to get the elapsed time for this phase of AssetLoading.
-        float startTime = Time.realtimeSinceStartup;
-        AssetBundleManager.SetSourceAssetBundleURL(Item.AssetBundleUri);
-        var InitRequest = AssetBundleManager.Initialize();
-        if (InitRequest != null)
-            yield return StartCoroutine(InitRequest);
-        var assetRequest = AssetBundleManager.LoadAssetAsync(Item.AssetBundleName, Item.Name, typeof(GameObject));
-        if (assetRequest == null)
-            yield break;
-        yield return StartCoroutine(assetRequest);
-        if (assetRequest != null)
-        {
 
-            // Get the asset.
-            GameObject prefab = assetRequest.GetAsset<GameObject>();
-            // code below could be used to position the AssetBundles
-            //prefab.transform.position = new Vector3(0,1,4); 
-            if (prefab != null)
-            {
 
-                GameObject obj = Instantiate(prefab) as GameObject;
-                obj.transform.eulerAngles = new Vector3(Item.rotationX, Item.rotationY, Item.rotationZ);
-                obj.transform.localScale = new Vector3(Item.scaleX, Item.scaleY, Item.scaleZ);
-                if (parentGameObject != null)
-                    obj.transform.parent = parentGameObject.transform;
-                obj.transform.localPosition = new Vector3(Item.positionX, Item.positionY, Item.positionZ);
 
-                SetCurrent3DObject(obj);
-            }
 
-            // Calculate and display the elapsed time.
-            float elapsedTime = Time.realtimeSinceStartup - startTime;
-            Debug.Log(Item.Name + (prefab == null ? " was not" : " was") + " loaded successfully in " + elapsedTime + " seconds");
-        }
 
-    }
-    public static GameObject GetRemoteAssetBundle(localDB.ObjectModel Item, GameObject parentGameObject)
-    {
-        RemoveAssetBundle(Item.AssetBundleName);
-        // This is simply to get the elapsed time for this phase of AssetLoading.
-        float startTime = Time.realtimeSinceStartup;
-        AssetBundleManager.SetSourceAssetBundleURL(Item.AssetBundleUri);
-        var InitRequest = AssetBundleManager.Initialize();
-        if (InitRequest != null)
-            WaitCoroutine(InitRequest);
-        var assetRequest = AssetBundleManager.LoadAssetAsync(Item.AssetBundleName, Item.Name, typeof(GameObject));
-        if (assetRequest == null)
-            return null;
-        WaitCoroutine(assetRequest);
-        GameObject obj = null;
-        if (assetRequest != null)
-        {
 
-            // Get the asset.
-            GameObject prefab = assetRequest.GetAsset<GameObject>();
-            // code below could be used to position the AssetBundles
-            //prefab.transform.position = new Vector3(0,1,4); 
-            if (prefab != null)
-            {
-
-                obj = Instantiate(prefab) as GameObject;
-                obj.transform.eulerAngles = new Vector3(Item.rotationX, Item.rotationY, Item.rotationZ);
-                obj.transform.localScale = new Vector3(Item.scaleX, Item.scaleY, Item.scaleZ);
-                if (parentGameObject != null)
-                    obj.transform.parent = parentGameObject.transform;
-                obj.transform.localPosition = new Vector3(Item.positionX, Item.positionY, Item.positionZ);
-            }
-
-            // Calculate and display the elapsed time.
-            float elapsedTime = Time.realtimeSinceStartup - startTime;
-            Debug.Log(Item.Name + (prefab == null ? " was not" : " was") + " loaded successfully in " + elapsedTime + " seconds");
-        }
-        return obj;
-    }
-    public static void RemoveAssetBundle(string name)
-    {
-        foreach (AssetBundle a in AssetBundle.GetAllLoadedAssetBundles())
-        {
-            if (a.name == name)
-            {
-                a.Unload(true);
-                break;
-            }
-        }
-    }
-    public static GameObject GetLocalAssetBundle(localDB.ObjectModel Item, GameObject parentGameObject)
-    {
-        RemoveAssetBundle(Item.AssetBundleName);
-        var myLoadedAssetBundle = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, Item.AssetBundleName));
-        if (myLoadedAssetBundle == null)
-        {
-            Debug.Log("Failed to load AssetBundle from " + Application.streamingAssetsPath + "!");
-            return null;
-        }
-        GameObject obj = null;
-        var prefab = myLoadedAssetBundle.LoadAsset<GameObject>(Item.Name);
-        if (prefab != null)
-        {
-
-            obj = Instantiate(prefab) as GameObject;
-            obj.transform.eulerAngles = new Vector3(Item.rotationX, Item.rotationY, Item.rotationZ);
-            obj.transform.localScale = new Vector3(Item.scaleX, Item.scaleY, Item.scaleZ);
-            if (parentGameObject != null)
-                obj.transform.parent = parentGameObject.transform;
-            obj.transform.localPosition = new Vector3(Item.positionX, Item.positionY, Item.positionZ);
-        }
-
-        return obj;
-    }
     private void LoadLocalAssetBundle(localDB.ObjectModel Item, GameObject parentGameObject)
     {
         GameObject obj = GetLocalAssetBundle(Item, parentGameObject);
@@ -217,9 +83,8 @@ public class MainSceneUI : MonoBehaviour {
 
         }
     }
-    private void LoadRemoteAssetBundle(localDB.ObjectModel Item, GameObject parentGameObject)
+    public void AssetLoaded(GameObject obj)
     {
-        GameObject obj = GetRemoteAssetBundle(Item, parentGameObject);
         if (obj != null)
         {
             obj.transform.parent = gameObject.transform;
@@ -227,42 +92,14 @@ public class MainSceneUI : MonoBehaviour {
 
         }
     }
-    public static void WaitCoroutine(IEnumerator func)
+    private void LoadRemoteAssetBundle(localDB.ObjectModel Item, GameObject parentGameObject)
     {
-        while (func.MoveNext())
-        {
-            if (func.Current != null)
-            {
-                IEnumerator num;
-                try
-                {
-                    num = (IEnumerator)func.Current;
-                }
-                catch (System.InvalidCastException)
-                {
-                    if (func.Current.GetType() == typeof(WaitForSeconds))
-                        Debug.LogWarning("Skipped call to WaitForSeconds. Use WaitForSecondsRealtime instead.");
-                    return;  // Skip WaitForSeconds, WaitForEndOfFrame and WaitForFixedUpdate
-                }
-                WaitCoroutine(num);
-            }
-        }
+
+        MainSceneUI.Instance.StartCoroutine(MainSceneUI.Instance.GetRemoteAssetBundleAsync(Item, parentGameObject, AssetLoaded));
     }
-    public static GameObject  GetLocalPrefab(localDB.ObjectModel Item, GameObject parentGameObject)
-    {
-        Object res = Resources.Load(Item.Name, typeof(GameObject));
-        if (res != null)
-        {
-            GameObject obj = Instantiate(res) as GameObject;
-            obj.transform.eulerAngles = new Vector3(Item.rotationX, Item.rotationY, Item.rotationZ);
-            obj.transform.localScale = new Vector3(Item.scaleX, Item.scaleY, Item.scaleZ);
-            if (parentGameObject != null)
-                obj.transform.parent = parentGameObject.transform;
-            obj.transform.localPosition = new Vector3(Item.positionX, Item.positionY, Item.positionZ);
-            return obj;
-        }
-        return null;
-    }
+
+
+
     private void LoadLocalPrefab(localDB.ObjectModel Item, GameObject parentGameObject)
     {
         GameObject obj = GetLocalPrefab(Item, parentGameObject);
@@ -272,23 +109,7 @@ public class MainSceneUI : MonoBehaviour {
             SetCurrent3DObject(obj);
         }
     }
-    public static GameObject GetLocalPrimitive(localDB.ObjectModel Item, GameObject parentGameObject)
-    {
-        PrimitiveType pt = PrimitiveType.Capsule;
 
-        if (GetPrimitiveType(Item.Name, out pt) == true)
-        {
-            GameObject obj = GameObject.CreatePrimitive(pt);
-            obj.transform.eulerAngles = new Vector3(Item.rotationX, Item.rotationY, Item.rotationZ);
-            obj.transform.localScale = new Vector3(Item.scaleX, Item.scaleY, Item.scaleZ);
-            if(parentGameObject!=null)
-            obj.transform.parent = parentGameObject.transform;
-            obj.transform.localPosition = new Vector3(Item.positionX, Item.positionY, Item.positionZ);
-
-            return obj;
-        }
-        return null;
-    }
     private void LoadLocalPrimitive(localDB.ObjectModel Item, GameObject parentGameObject)
     {
         GameObject obj = GetLocalPrimitive(Item, parentGameObject);
@@ -330,6 +151,7 @@ public class MainSceneUI : MonoBehaviour {
                         else if (Item.Type == localDB.ObjectModel.TypeRemoteAssetBundle)
                         {
                             LoadRemoteAssetBundle(Item, target);
+                        //    StartCoroutine(OldLoadRemoteAssetBundle(Item, target));
                         }
                     }
                 }

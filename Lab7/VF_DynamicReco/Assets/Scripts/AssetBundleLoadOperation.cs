@@ -176,16 +176,16 @@ namespace AssetBundles
 				return false;
 	
 			LoadedAssetBundle bundle = AssetBundleManager.GetLoadedAssetBundle (m_AssetBundleName, out m_DownloadingError);
-			if (bundle != null)
-			{
-				///@TODO: When asset bundle download fails this throws an exception...
-				m_Request = bundle.m_AssetBundle.LoadAssetAsync (m_AssetName, m_Type);
-				return false;
+            if (bundle != null)
+            {
+                ///@TODO: When asset bundle download fails this throws an exception...
+                if (bundle.m_AssetBundle != null)
+                { 
+                    m_Request = bundle.m_AssetBundle.LoadAssetAsync(m_AssetName, m_Type);
+                    return false;
+                }
 			}
-			else
-			{
-				return true;
-			}
+			return true;
 		}
 		
 		public override bool IsDone ()

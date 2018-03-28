@@ -9,7 +9,7 @@ Confidential and Proprietary - Protected under copyright and other laws.
 using UnityEngine;
 using Vuforia;
 using System.Collections.Generic;
-using UnityEngine;
+
 using UnityEngine.UI;
 using System.IO;
 using AssetBundles;

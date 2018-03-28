@@ -7,11 +7,33 @@ using AssetBundles;
 using UnityEngine.SceneManagement;
 using Vuforia;
 
-public class RecognitionSceneUI : MonoBehaviour {
+public class RecognitionSceneUI : AssetLoaderUI {
 
 
     private GameObject current3DObject = null;
     public static RecognitionSceneUI Instance = null;
+    public void AssetLoaded(GameObject obj)
+    {
+        if (obj != null)
+        {
+            current3DObject = obj;
+            List<Renderer> list = new List<Renderer>();
+            current3DObject.GetComponents<Renderer>(list);
+            if (list.Count == 0)
+            {
+                current3DObject.GetComponentsInChildren<Renderer>(list);
+            }
+            if (list.Count > 0)
+            {
+                foreach (var r in list)
+                {
+                    r.enabled = false;
+                }
+            }
+
+        }
+    }
+
     private void Awake()
     {
         Instance = this;
@@ -44,37 +66,22 @@ public class RecognitionSceneUI : MonoBehaviour {
                     GameObject obj = null;
                     if (Item.Type == localDB.ObjectModel.TypePrimitive)
                     {
-                        obj = MainSceneUI.GetLocalPrimitive(Item, target);
+                        obj = GetLocalPrimitive(Item, target);
+                        AssetLoaded(obj);
                     }
                     else if (Item.Type == localDB.ObjectModel.TypeLocalPrefab)
                     {
-                        obj = MainSceneUI.GetLocalPrefab(Item, target);
+                        obj = GetLocalPrefab(Item, target);
+                        AssetLoaded(obj);
                     }
                     else if (Item.Type == localDB.ObjectModel.TypeLocalAssetBundle)
                     {
-                        obj = MainSceneUI.GetLocalAssetBundle(Item, target);
+                        obj = GetLocalAssetBundle(Item, target);
+                        AssetLoaded(obj);
                     }
                     else if (Item.Type == localDB.ObjectModel.TypeRemoteAssetBundle)
                     {
-                        obj = MainSceneUI.GetRemoteAssetBundle(Item, target);
-                    }
-                    if (obj != null)
-                    {
-                        current3DObject = obj;
-                        List<Renderer> list = new List<Renderer>();
-                        current3DObject.GetComponents<Renderer>(list);
-                        if (list.Count == 0)
-                        {
-                            current3DObject.GetComponentsInChildren<Renderer>(list);
-                        }
-                        if (list.Count > 0)
-                        {
-                            foreach (var r in list)
-                            {
-                                r.enabled = false;
-                            }
-                        }
-
+                        StartCoroutine(GetRemoteAssetBundleAsync(Item, target, AssetLoaded));
                     }
                 }
             }
