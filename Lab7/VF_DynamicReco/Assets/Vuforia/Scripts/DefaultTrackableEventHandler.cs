@@ -90,31 +90,57 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
         // Enable canvas':
         foreach (var component in canvasComponents)
             component.enabled = true;
+        TargetFound = true;
+        EnableSaveButton(TargetFound);
+    }
+    private bool TargetFound = false;
+    void PositionSaveButton()
+    {
+        var canvasList = RecognitionSceneUI.Instance.GetComponentsInChildren<Canvas>();
+        if (canvasList != null)
+        {
+            foreach (var canvas in canvasList)
+            {
+                if (canvas.name == "SaveCanvas")
+                {
 
-        EnableSaveButton(true);
+                    var targetList = GetComponentsInChildren<Component>();
+                    if (targetList != null)
+                    {
+                        foreach (var target in targetList)
+                        {
+                            if (target.name == "MultiTarget")
+                            {
+                                Vector3 org = new Vector3(0, 0, 0);
+                                float distance = Vector3.Distance(target.transform.position, org);
+                                float factor = 5 / distance;
+                                canvas.transform.position = target.transform.position * factor + new Vector3(0, 1, 0);
+                                break;
+                            }
+
+                        }
+                    }
+                    break;
+                }
+            }
+        }
     }
     void EnableSaveButton(bool bEnable)
     {
         if (RecognitionSceneUI.Instance != null)
         {
-            var buttonList = RecognitionSceneUI.Instance.GetComponentsInChildren<Button>();
-            if (buttonList != null)
+            RecognitionSceneUI.Instance.ShowSaveButton(bEnable);
+
+            if (bEnable == true)
             {
-                foreach (var button in buttonList)
-                {
-                    var label = button.GetComponentInChildren<Text>();
-                    if ((label.text == "Save") || (label.text == "Do Nothing"))
-                    {
-                        button.enabled = bEnable;
-                        if (bEnable == true)
-                            label.text = "Save";
-                        else
-                            label.text = "Do Nothing";
-                        break;
-                    }
-                }
+                PositionSaveButton();
             }
         }
+    }
+    void Update()
+    {
+        if(TargetFound==true)
+            PositionSaveButton();
     }
 
     protected virtual void OnTrackingLost()
@@ -135,7 +161,8 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
         foreach (var component in canvasComponents)
             component.enabled = false;
 
-        EnableSaveButton(false);
+        TargetFound = false;
+        EnableSaveButton(TargetFound);
     }
 
     #endregion // PRIVATE_METHODS

@@ -33,7 +33,13 @@ public class RecognitionSceneUI : AssetLoaderUI {
 
         }
     }
+    public void ShowSaveButton(bool bShow)
+    {
 
+        var CanvasObject = GameObject.Find("SaveCanvas").GetComponent<Canvas>();
+        CanvasObject.GetComponent<Canvas>().enabled = bShow;
+
+    }
     private void Awake()
     {
         Instance = this;
@@ -49,9 +55,7 @@ public class RecognitionSceneUI : AssetLoaderUI {
         foreach (var button in buttonList)
         {
             var label = button.GetComponentInChildren<Text>();
-            if ((label.text == "Save") || (label.text == "Do Nothing"))
-                label.text = "Do Nothing";
-
+            ShowSaveButton(false);
             button.onClick.AddListener(() => Button_OnClick(label));
         }
 
