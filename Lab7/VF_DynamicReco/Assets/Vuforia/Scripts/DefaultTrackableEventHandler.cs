@@ -114,7 +114,7 @@ public class DefaultTrackableEventHandler : MonoBehaviour, ITrackableEventHandle
                                 Vector3 org = new Vector3(0, 0, 0);
                                 float distance = Vector3.Distance(target.transform.position, org);
                                 float factor = 5 / distance;
-                                canvas.transform.position = target.transform.position * factor + new Vector3(0, 1, 0);
+                                canvas.transform.position = target.transform.position * factor + new Vector3(0, 0.3f, 0);
                                 break;
                             }
 
